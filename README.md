@@ -1,6 +1,6 @@
 # 2048_TUYEN
 EZ GAME
-2048Draft.exe là bản raw đầu tiên cho game.
-image.png là hình ảnh cho phiên bản SDL đầu tiên.
-solve.exe --> SDL phun màu.
-2048.exe --> final version. 
+HOW TO USE:
+- Mở thư mục 2048: nhấp shift + chuột phải --> Nhấn Open Command window here
+- Hiện ra file cmd: gõ make, đợi 1 lúc.
+- gõ 2048.exe and enjoy.
