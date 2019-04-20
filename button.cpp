@@ -31,6 +31,8 @@ void LButton::drawButton(SDL_Color textColor, SDL_Color backgroundColor){
     // load button screen width/height
     set(gText.getWidth() + 2, gText.getHeight() + 2);
     fillRectangle(mPosition.x,mPosition.y,buttonWidth, buttonHeight, backgroundColor);
+    SDL_Rect clip = {mPosition.x, mPosition.y,buttonWidth, buttonHeight};
+    fillRectangleBackground(clip,BACKGROUND_BUTTON);
     // draw button
     // draw button content.
     gText.normalRender(mPosition.x, mPosition.y);

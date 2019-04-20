@@ -23,6 +23,13 @@ void fillRectangle(int x,int y, int width, int height, SDL_Color gColor){
     SDL_SetRenderDrawColor(gRenderer,gColor.r, gColor.g, gColor.b, 0xFF);
     SDL_RenderFillRect(gRenderer, &fillRect);
 }
+void fillRectangleBackground(SDL_Rect clip, SDL_Color gColor){
+    SDL_SetRenderDrawColor(gRenderer, gColor.r , gColor.g, gColor.b, 0XFF);
+    SDL_RenderDrawLine(gRenderer, clip.x, clip.y, clip.x + clip.w, clip.y);
+    SDL_RenderDrawLine(gRenderer, clip.x, clip.y + clip.h, clip.x + clip.w, clip.y + clip.h);
+    SDL_RenderDrawLine(gRenderer, clip.x, clip.y, clip.x, clip.y + clip.h);
+    SDL_RenderDrawLine(gRenderer, clip.x + clip.w, clip.y, clip.x + clip.w, clip.y + clip.h);
+}
 void init(){
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -180,18 +187,11 @@ void ScreenForLoser(int score){
     //SDL_RenderClear(gRenderer);
     // SDL_SetRenderDrawColor(gRenderer,rand()%256, rand()%256, rand() % 256, 0xFF);
     gTextTexture.loadText("Game Over", {150,150,0});
-    gTextTexture.normalRender(250, 200);
+    gTextTexture.normalRender(250, 250);
     // string text = "Your score is:" + intoString(score);
     // gTextTexture.loadText(text, {150,150,0});
     // gTextTexture.normalRender(200, 240);
     SDL_RenderPresent(gRenderer);
-    bool quit = false;
-    SDL_Event e;
-    while (!quit){
-        while (SDL_PollEvent(&e)){
-            if (e.type == SDL_QUIT) quit = true;
-        }
-    }
 }
 /* int main(int argc, char *argv[]){
     srand(time(NULL));

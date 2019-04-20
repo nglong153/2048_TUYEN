@@ -269,13 +269,10 @@ void implementPS4(SDL_Event e){
 	}
 }
 void game(){
-	init();
-	loadMedia();
-	initController();
 	bool quit = false;
 	SDL_Event e;
-	newGame.initButton(0,50, "New game");
-	string text = "Mode " + intoString(mode+1);newMode.initButton(0,100,text);
+	newGame.initButton(5,50, "New game");
+	string text = "Mode " + intoString(mode+1);newMode.initButton(5,100,text);
 	while (ok() && !quit){
 		random();
 		if (firstMove) {random(); firstMove = false;}
@@ -308,6 +305,17 @@ void game(){
 	//	
 	}
 	ScreenForLoser(score);
+	quit = false; 
+    while (!quit){
+        while (SDL_PollEvent(&e)){
+            if (e.type == SDL_QUIT) quit = true;
+			else if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONUP) {
+				newGame.handleEvent(&e,restart);
+				// check if restart again.
+				if (firstMove) game();
+			}
+        }
+    }
 	close();
 	//system("cls"); 
 //	cout << "You lost.\n";
@@ -316,6 +324,9 @@ void game(){
 }
 int main(int argc, char *argv[]){
 	srand(time(NULL));
+	init();
+	loadMedia();
+	initController();
 	game();
 	//init();
 	//loadMedia();

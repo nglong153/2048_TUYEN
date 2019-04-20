@@ -19,6 +19,7 @@ void loadMedia();
 void close();
 void ScreenForLoser(int score);
 void fillRectangle(int x,int y, int width, int height, SDL_Color gColor);
+void fillRectangleBackground(SDL_Rect clip, SDL_Color gColor);
 void drawButton(LButton e,SDL_Color textColor, SDL_Color backgroundColor);
 string intoString(int score);
 void display(int score,GRID grid[N][N],LButton* newGame,LButton* newMode);
