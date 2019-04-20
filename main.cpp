@@ -8,6 +8,7 @@ int score;
 int maxScore = 0; 
 bool firstMove = true;
 LButton newGame;
+LButton newMode;
 #define DPAD_UP 11
 #define DPAD_DOWN 12
 #define DPAD_LEFT 13
@@ -15,10 +16,12 @@ LButton newGame;
 #define L1 9
 #define R1 10
 #define START 6
-
+int mode = 0;
 SDL_GameController* gGameController = NULL;
 SDL_Haptic* gControllerHaptic = NULL;
 bool controllerConnected = false;
+
+int getMode(){return mode;};
 void initController(){
 	if( SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0 )
 	{
@@ -52,9 +55,27 @@ void initController(){
 }
 
 
-
-
 GRID grid[N][N], pre[N][N];
+// button newMode
+void reverse(){
+	mode = 1 - mode;
+	string text = "Mode " + intoString(mode+1);
+	newMode.initButton(0,100,text);
+	if (mode == 0){
+		for(int i=1;i<=4;++i) for(int j=1;j<=4;++j) 
+			if (grid[i][j].score){
+				grid[i][j].color = iColor[(int)log2(grid[i][j].score)];
+			} 
+	}
+	else {
+		for(int i=1;i<=4;++i) for(int j=1;j<=4;++j) 
+			if (grid[i][j].score){
+				grid[i][j].color = randomColor();
+			} 
+	}
+	display(score, grid, &newGame, &newMode);
+}
+// button newGame
 void restart(){
 	score = 0; 
 	for(int i=0;i<=5;++i){
@@ -77,6 +98,7 @@ void random(){
 			// check if that grid is available
 			temp = true;	
 			grid[x][y].random(); // random the value for grid[x][y]
+			if (mode == 1) grid[x][y].color = randomColor();
 		}
 	}
 }
@@ -104,7 +126,9 @@ void left(){
 	for (int i=1;i<=4;++i){
 		for(int j=1;j<4;++j){
 			if (grid[i][j].score && grid[i][j].score == grid[i][j+1].score) {
-				grid[i][j] = grid[i][j] + grid[i][j+1]; score+= grid[i][j].score;
+				grid[i][j] = grid[i][j] + grid[i][j+1]; 
+				if (mode == 1) grid[i][j].color = colorMix(grid[i][j].color, grid[i][j+1].color);
+				score+= grid[i][j].score;
 				for(int z = j+1;z<=4;++z) grid[i][z] = grid[i][z+1];
 			}
 		}
@@ -126,6 +150,7 @@ void right(){
 		for(int j=4;j>1;--j){
 			if (grid[i][j].score && grid[i][j].score == grid[i][j-1].score){
 				grid[i][j] = grid[i][j] + grid[i][j-1]; score+= grid[i][j].score;
+				if (mode == 1) grid[i][j].color = colorMix(grid[i][j].color, grid[i][j-1].color);
 				for(int z=j-1;z>=1;--z) grid[i][z] = grid[i][z-1]; 
 			}
 		}
@@ -147,6 +172,7 @@ void up(){
 		for(int i=1;i<4;++i){
 			if (grid[i][j].score && grid[i][j].score == grid[i+1][j].score){
 				grid[i][j] = grid[i][j] + grid[i+1][j]; score+= grid[i][j].score;
+				if (mode == 1) grid[i][j].color = colorMix(grid[i][j].color, grid[i+1][j].color);
 				for(int z = i+1;z<=4;++z) grid[z][j] = grid[z+1][j];
 			}
 		}
@@ -167,6 +193,7 @@ void down(){
 		for(int i=4;i>1;--i){
 			if (grid[i][j].score && grid[i][j].score == grid[i-1][j].score){
 				grid[i][j] = grid[i][j] + grid[i-1][j]; score+= grid[i][j].score;
+				if (mode == 1) grid[i][j].color = colorMix(grid[i][j].color, grid[i-1][j].color);
 				for(int z = i-1; z>= 1; --z) grid[z][j] = grid[z-1][j];
 			}
 		}
@@ -255,11 +282,12 @@ void game(){
 	bool quit = false;
 	SDL_Event e;
 	newGame.initButton(0,50, "New game");
+	string text = "Mode " + intoString(mode+1);newMode.initButton(0,100,text);
 	while (ok() && !quit){
 		random();
 		if (firstMove) {random(); firstMove = false;}
 		// at the first move, we have two numbers in our screen. 
-		display(score, grid, &newGame);
+		display(score, grid, &newGame, &newMode);
 		if (loseCondition()) break;
 		for(int i=1;i<=4;++i) for(int j=1;j<=4;++j) pre[i][j] = grid[i][j];
 		while(!quit){
@@ -268,7 +296,10 @@ void game(){
 				else {
 					if (e.type == SDL_KEYDOWN) implement(e);
 					else if(e.type == SDL_CONTROLLERBUTTONDOWN)	implementPS4(e);
-					else if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONUP) newGame.handleEvent(&e);
+					else if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONUP) {
+						newGame.handleEvent(&e,restart);
+						newMode.handleEvent(&e,reverse);
+					}
 					if(maxScore < maxBoard()){
 						int msec = maxBoard() - maxScore;
 						if(msec < 200) msec = 200;

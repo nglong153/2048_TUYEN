@@ -89,7 +89,6 @@ void LTexture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* ce
 		renderQuad.h = pHeight;
         renderQuad.x = x + (clip->w - pWidth)/2;
         renderQuad.y = y + (clip->h - pHeight)/2;
-        cout << renderQuad.x << ' ' << renderQuad.y << ' ' << renderQuad.w << ' ' << renderQuad.h << '\n';
         //fillRectangle(renderQuad.x, renderQuad.y, pWidth, pHeight, BLANK_SQUARE_COLOR);
         //printf("x:%d width:%d y:%d height:%d\n", renderQuad.x,pWidth,renderQuad.y, pHeight);
 	}
@@ -133,7 +132,7 @@ string intoString(int score){
 //         int y = yl + (i-1) * squareWidth;
 //     }
 // }
-void display(int score, GRID grid[N][N], LButton* newGame){
+void display(int score, GRID grid[N][N], LButton* newGame,LButton* newMode){
     //DrawShape();
     // Clear
     SDL_SetRenderDrawColor(gRenderer,255, 255, 255, 255);
@@ -150,6 +149,11 @@ void display(int score, GRID grid[N][N], LButton* newGame){
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", 20);
 	newGame->drawButton(WHITE, BACKGROUND_BUTTON);
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", 30);
+    //
+    gFont = TTF_OpenFont("ClearSans-Bold.ttf", 20);
+	newMode->drawButton(WHITE, BACKGROUND_BUTTON);
+    gFont = TTF_OpenFont("ClearSans-Bold.ttf", 30);
+    //
     for(int i=1;i<=4;++i){
         for(int j=1;j<=4;++j){
             int x = xl + (j-1) * squareWidth;
@@ -158,7 +162,7 @@ void display(int score, GRID grid[N][N], LButton* newGame){
             if (grid[i][j].score) {
                 string text = intoString(grid[i][j].score);
                 //gColor = {log2(grid[i][j])*30,log2(grid[i][j])*30,log2(grid[i][j])*30};
-                gTextTexture.loadText(text, getTextColor(grid[i][j].score));
+                gTextTexture.loadText(text, getTextColor(grid[i][j]));
                 gTextTexture.render(x,y);
             }
         }

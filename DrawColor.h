@@ -1,5 +1,6 @@
 #ifndef DrawColor_h
 #define DrawColor_h
+#include "grid.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -29,7 +30,7 @@ const SDL_Color iColor[13] = {
 };
 SDL_Color randomColor();
 int colorDistance(SDL_Color colorA, SDL_Color colorB);
-SDL_Color getTextColor(int score);
+SDL_Color getTextColor(GRID a);
 SDL_Color reverseColor(SDL_Color a);
 SDL_Color colorMix(SDL_Color A, SDL_Color B);
 

@@ -11,7 +11,7 @@ class LButton
         LButton();
         void initButton(int x,int y,string s);
         void set(int x,int y);
-        void handleEvent(SDL_Event* e);
+        void handleEvent(SDL_Event* e,void (*restart)());
         int insideButton(int x,int y);
         int getButtonWidth();
         int getButtonHeight();

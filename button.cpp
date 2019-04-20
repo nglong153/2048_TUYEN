@@ -35,7 +35,7 @@ void LButton::drawButton(SDL_Color textColor, SDL_Color backgroundColor){
     // draw button content.
     gText.normalRender(mPosition.x, mPosition.y);
 }
-void LButton::handleEvent(SDL_Event* e){
+void LButton::handleEvent(SDL_Event* e,void (*restart)()){
     if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONUP){
         int x,y;
         SDL_GetMouseState(&x, &y);

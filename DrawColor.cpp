@@ -1,12 +1,19 @@
 #include "DrawColor.h"
 #include "display.h"
+#include "main.h"
+#include "grid.h"
 SDL_Color randomColor(){
     return {rand()%256, rand()%256, rand()%256};
 }
 int colorDistance(SDL_Color colorA, SDL_Color colorB){
     return (abs(colorA.r - colorB.r) + abs(colorA.g - colorB.g) + abs(colorA.b - colorB.b));
 }
-SDL_Color getTextColor(int score){
+SDL_Color getTextColor(GRID A){
+    int score = A.score;
+    SDL_Color color = A.color;
+    if (getMode() == 1) {
+        return (colorDistance(color, BLACK) > colorDistance(color, WHITE) ? BLACK : WHITE);
+    }
     if (score <=4) return {119,110,101};
     return {255,255,255};
     //return (colorDistance(A, BLACK) > colorDistance(A, WHITE) ? BLACK : WHITE);
