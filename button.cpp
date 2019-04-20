@@ -35,24 +35,25 @@ void LButton::drawButton(SDL_Color textColor, SDL_Color backgroundColor){
     // draw button content.
     gText.normalRender(mPosition.x, mPosition.y);
 }
+// Handle event E
 void LButton::handleEvent(SDL_Event* e,void (*restart)()){
     if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONUP){
         int x,y;
         SDL_GetMouseState(&x, &y);
         if (e->type == SDL_MOUSEMOTION){
-            if (insideButton(x,y)) {
+            if (insideButton(x,y)) { // check if the mouse is inside the button
                 setFont(20);
-                drawButton(BACKGROUND_BUTTON, SWHITE);
+                drawButton(BACKGROUND_BUTTON, SWHITE); // change button color.
                 setFont(30);
                 PresentRender();
             }
             else {
                 setFont(20);
-                drawButton(WHITE, BACKGROUND_BUTTON);
+                drawButton(WHITE, BACKGROUND_BUTTON); // change back
                 setFont(30);
                 PresentRender();
             } 
         }
-        if (insideButton(x,y) && e->type == SDL_MOUSEBUTTONUP)  restart();
+        if (insideButton(x,y) && e->type == SDL_MOUSEBUTTONUP)  restart(); // implement button content when click.
     }
 }

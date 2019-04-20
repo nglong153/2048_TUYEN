@@ -63,6 +63,12 @@ void LTexture::free(){
         pHeight = 0;
     }
 }
+int LTexture::getWidth(){
+    return pWidth;
+}
+int LTexture::getHeight(){
+    return pHeight;
+}
 void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue){
     SDL_SetTextureColorMod(pTexture, red, green, blue);
 }
@@ -95,6 +101,7 @@ void LTexture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* ce
 	//Render to screen
 	SDL_RenderCopyEx( gRenderer, pTexture, clip, &renderQuad, angle, center, flip );
 }
+// Render without caring about the position in desRect.
 void LTexture::normalRender(int x,int y,  SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip ){
     SDL_Rect renderQuad = {x, y, pWidth, pHeight};
     if( clip != NULL ){
@@ -103,12 +110,7 @@ void LTexture::normalRender(int x,int y,  SDL_Rect* clip, double angle, SDL_Poin
 	}
 	SDL_RenderCopyEx( gRenderer, pTexture, clip, &renderQuad, angle, center, flip );
 }
-int LTexture::getWidth(){
-    return pWidth;
-}
-int LTexture::getHeight(){
-    return pHeight;
-}
+
 bool LTexture::loadText(string text, SDL_Color gColor){
     SDL_Surface* tempSurface = TTF_RenderText_Blended(gFont, text.c_str(), gColor);
     pTexture = SDL_CreateTextureFromSurface(gRenderer, tempSurface);
@@ -137,19 +139,22 @@ void display(int score, GRID grid[N][N], LButton* newGame,LButton* newMode){
     // Clear
     SDL_SetRenderDrawColor(gRenderer,255, 255, 255, 255);
     SDL_RenderClear(gRenderer);
-
+    // Draw background for the board. 
     fillRectangle(xl, yl, squareWidth*4, squareWidth*4, OUTLINE_COLOR);
     gColor = {0,0,0};
+    // Draw scoreline
     string text = "Score:" + intoString(score);
     gTextTexture.loadText(text, {255,255,255});
-    fillRectangle(209, 0, 221, 45, {187,173,160});
+    fillRectangle(209, 0, 221, 45, {187,173,160}); // the Font for scoreline.
+
     SDL_Rect clip = {0,0,SCREEN_WIDTH,gTextTexture.getHeight() + 4};
     gTextTexture.render(0,0,&clip);
+    // Draw nemGame button
     // temporary change gFont.
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", 20);
 	newGame->drawButton(WHITE, BACKGROUND_BUTTON);
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", 30);
-    //
+    // Draw newMode button
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", 20);
 	newMode->drawButton(WHITE, BACKGROUND_BUTTON);
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", 30);

@@ -4,11 +4,6 @@
 #include "main.h"
 #include "button.h"
 using namespace std;
-int score; 
-int maxScore = 0; 
-bool firstMove = true;
-LButton newGame;
-LButton newMode;
 #define DPAD_UP 11
 #define DPAD_DOWN 12
 #define DPAD_LEFT 13
@@ -16,12 +11,17 @@ LButton newMode;
 #define L1 9
 #define R1 10
 #define START 6
+int score; 
+int maxScore = 0; 
 int mode = 0;
+bool firstMove = true; // to check if it is the first move in the game, then we implement two random functions.
+LButton newGame;
+LButton newMode;
 SDL_GameController* gGameController = NULL;
 SDL_Haptic* gControllerHaptic = NULL;
 bool controllerConnected = false;
 
-int getMode(){return mode;};
+
 void initController(){
 	if( SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0 )
 	{
@@ -56,6 +56,8 @@ void initController(){
 
 
 GRID grid[N][N], pre[N][N];
+
+int getMode(){return mode;};
 // button newMode
 void reverse(){
 	mode = 1 - mode;
@@ -199,16 +201,7 @@ void down(){
 		}
 	}
 }
-/*void display(){
-	//system("cls");
-	cout << "Score:" << score << '\n';
-	for(int i=1;i<=4;++i){
-		for(int j=1;j<=4;++j){
-			cout << setw(6) << grid[i][j];
-		}
-		cout << '\n'; 
-	}
-}*/
+// check if the grid could generate new number
 bool ok(){
 	for(int i=1;i<=4;++i){
 		for(int j=1;j<=4;++j) if (!grid[i][j].score) return 1;
