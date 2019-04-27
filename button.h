@@ -17,10 +17,11 @@ class LButton
         int getButtonHeight();
         string getButtonText();
         SDL_Point getPosition();
-        void drawButton(SDL_Color textColor, SDL_Color backgroundColor);
+        void drawButton();
     private:
         SDL_Point mPosition;
         int buttonHeight, buttonWidth;
+        int currentSprite; 
         string text;
 };
 

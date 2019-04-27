@@ -10,7 +10,12 @@
 #include <string>
 using namespace std;
 const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_HEIGHT = 550;
+const int xl = 120;
+const int xr = 520;
+const int yl = 80;
+const int yr = 480;
+const int squareWidth = 100; 
 const int N = 7;
 void setFont(int v);
 void init();

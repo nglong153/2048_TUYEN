@@ -3,20 +3,19 @@
 #include "button.h"
 #include <time.h>
 #include <math.h>
-int xl = 120, xr = 520, yl = 80, yr = 480;
-int squareWidth = 100; 
-SDL_Surface* gSurface = NULL;
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
-SDL_Texture* gTexture = NULL;
 TTF_Font* gFont = NULL;
 SDL_Color gColor;
 LTexture gTextTexture; 
 
 using namespace std;
 void setFont(int v){
+    // Deallocate close previous font
+    TTF_CloseFont(gFont);gFont = NULL;
     gFont = TTF_OpenFont("ClearSans-Bold.ttf", v);
 }
+
 void fillRectangle(int x,int y, int width, int height, SDL_Color gColor){
     SDL_Rect fillRect = {x,y, width, height};
     // SDL_SetRenderDrawColor(gRenderer,rand()%256, rand()%256, rand() % 256, 0xFF);
@@ -65,7 +64,7 @@ LTexture::~LTexture(){
 }
 void LTexture::free(){
     if (pTexture != NULL){
-        SDL_DestroyTexture(pTexture);
+        SDL_DestroyTexture(pTexture); pTexture = NULL;
         pWidth = 0;
         pHeight = 0;
     }
@@ -119,6 +118,7 @@ void LTexture::normalRender(int x,int y,  SDL_Rect* clip, double angle, SDL_Poin
 }
 
 bool LTexture::loadText(string text, SDL_Color gColor){
+    free();
     SDL_Surface* tempSurface = TTF_RenderText_Blended(gFont, text.c_str(), gColor);
     pTexture = SDL_CreateTextureFromSurface(gRenderer, tempSurface);
     pWidth = tempSurface->w; pHeight = tempSurface->h;
@@ -146,8 +146,10 @@ void display(int score, GRID grid[N][N], LButton* newGame,LButton* newMode){
     // Clear
     SDL_SetRenderDrawColor(gRenderer,255, 255, 255, 255);
     SDL_RenderClear(gRenderer);
+    gTextTexture.free();
+    //fillRectangle(xl-5, yl-5, squareWidth*4+10, squareWidth*4+10, OUTLINE_COLOR);
+    setFont(30);
     // Draw background for the board. 
-    fillRectangle(xl, yl, squareWidth*4, squareWidth*4, OUTLINE_COLOR);
     gColor = {0,0,0};
     // Draw scoreline
     string text = "Score:" + intoString(score);
@@ -157,14 +159,9 @@ void display(int score, GRID grid[N][N], LButton* newGame,LButton* newMode){
     SDL_Rect clip = {0,0,SCREEN_WIDTH,gTextTexture.getHeight() + 4};
     gTextTexture.render(0,0,&clip);
     // Draw nemGame button
-    // temporary change gFont.
-    gFont = TTF_OpenFont("ClearSans-Bold.ttf", 20);
-	newGame->drawButton(WHITE, BACKGROUND_BUTTON);
-    gFont = TTF_OpenFont("ClearSans-Bold.ttf", 30);
+	newGame->drawButton();
     // Draw newMode button
-    gFont = TTF_OpenFont("ClearSans-Bold.ttf", 20);
-	newMode->drawButton(WHITE, BACKGROUND_BUTTON);
-    gFont = TTF_OpenFont("ClearSans-Bold.ttf", 30);
+	newMode->drawButton();
     //
     for(int i=1;i<=4;++i){
         for(int j=1;j<=4;++j){
@@ -186,6 +183,7 @@ void ScreenForLoser(int score){
     //fillRectangle(xl,yl,squareWidth*4,{212,200,189});
     //SDL_RenderClear(gRenderer);
     // SDL_SetRenderDrawColor(gRenderer,rand()%256, rand()%256, rand() % 256, 0xFF);
+    setFont(30);
     gTextTexture.loadText("Game Over", {150,150,0});
     gTextTexture.normalRender(250, 250);
     // string text = "Your score is:" + intoString(score);
@@ -193,11 +191,18 @@ void ScreenForLoser(int score){
     // gTextTexture.normalRender(200, 240);
     SDL_RenderPresent(gRenderer);
 }
-/* int main(int argc, char *argv[]){
-    srand(time(NULL));
-    for(int i=1;i<=4;++i)   for(int j=1;j<=4;++j) {
-        int elo = rand() % 10;
-        if (elo) grid[i][j] = (1 << elo);
-    }
-    display(500);
-} */
+// int main(int argc, char *argv[]){
+//     init();
+//     loadMedia();
+//     SDL_RenderClear(gRenderer);
+//     SDL_SetRenderDrawColor(gRenderer,255,255,255,0);
+//     setFont(20);
+//     gTextTexture.loadText("1000000", {0,0,0});
+//     fillRectangle(0,0,50,50,{150,150,0});
+//     cout << gTextTexture.getWidth() << ' ' << gTextTexture.getHeight() << '\n';
+//     gTextTexture.loadText("Score", {0,0,0});    
+//     cout << gTextTexture.getWidth() << ' ' << gTextTexture.getHeight();
+//     SDL_RenderPresent(gRenderer);
+//     SDL_Delay(1000);
+//     close();
+// } 

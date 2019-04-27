@@ -10,7 +10,8 @@ using namespace std;
 #define DPAD_RIGHT 14
 #define L1 9
 #define R1 10
-#define START 6
+#define START 4
+#define SELECT 6
 int score; 
 int maxScore = 0; 
 int mode = 0;
@@ -56,13 +57,15 @@ void initController(){
 
 
 GRID grid[N][N], pre[N][N];
-
+void DISPLAY(){
+	display(score, grid, &newGame, &newMode);
+}
 int getMode(){return mode;};
 // button newMode
 void reverse(){
 	mode = 1 - mode;
 	string text = "Mode " + intoString(mode+1);
-	newMode.initButton(0,100,text);
+	newMode.initButton(5,100,text);
 	if (mode == 0){
 		for(int i=1;i<=4;++i) for(int j=1;j<=4;++j) 
 			if (grid[i][j].score){
@@ -83,6 +86,7 @@ void restart(){
 	for(int i=0;i<=5;++i){
 		for(int j=0;j<=5;++j) {grid[i][j].score = 0, grid[i][j].color = BLANK_SQUARE_COLOR;}
 	}
+	maxScore = 0;
 	firstMove = true;
 }
 int maxBoard(){
@@ -264,15 +268,19 @@ void implementPS4(SDL_Event e){
 		left();
 		break;
 	case START:
-		//	g.restart();
+		restart();
+		break;
+	case SELECT:
+		reverse();
 		break;
 	}
+	
 }
 void game(){
 	bool quit = false;
-	SDL_Event e;
 	newGame.initButton(5,50, "New game");
-	string text = "Mode " + intoString(mode+1);newMode.initButton(5,100,text);
+	string text = "Mode " + intoString(mode+1);
+	newMode.initButton(5,100,text);
 	while (ok() && !quit){
 		random();
 		if (firstMove) {random(); firstMove = false;}
@@ -281,6 +289,8 @@ void game(){
 		if (loseCondition()) break;
 		for(int i=1;i<=4;++i) for(int j=1;j<=4;++j) pre[i][j] = grid[i][j];
 		while(!quit){
+			SDL_Delay(10);
+			SDL_Event e;
 			while (SDL_PollEvent(&e)){
 				if (e.type == SDL_QUIT) {quit = true; }
 				else {
@@ -300,20 +310,27 @@ void game(){
 					}
 				}
 			}
+			newGame.drawButton();
+			newMode.drawButton();
+			PresentRender();
 			if (compare()) break;
 		}
 	//	
 	}
 	ScreenForLoser(score);
-	quit = false; 
     while (!quit){
+		SDL_Delay(10);
+		SDL_Event e;
         while (SDL_PollEvent(&e)){
             if (e.type == SDL_QUIT) quit = true;
 			else if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONUP) {
 				newGame.handleEvent(&e,restart);
+				newGame.drawButton();
+				PresentRender();
 				// check if restart again.
 				if (firstMove) game();
 			}
+			else if (e.type == SDL_CONTROLLERBUTTONDOWN && e.cbutton.button == START) restart();
         }
     }
 	close();
@@ -324,10 +341,12 @@ void game(){
 }
 int main(int argc, char *argv[]){
 	srand(time(NULL));
+	//display(score, grid, &newGame, &newMode);
 	init();
 	loadMedia();
 	initController();
 	game();
+	//SDL_Delay(5000);
 	//init();
 	//loadMedia();
 	//ScreenForLoser(score);

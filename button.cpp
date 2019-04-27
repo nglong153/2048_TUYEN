@@ -7,6 +7,7 @@
 LButton::LButton(){
     mPosition.x = 0;
     mPosition.y = 0;
+    currentSprite = 1; 
     buttonHeight = buttonWidth = 0;
     text = "";
 }
@@ -24,10 +25,16 @@ int LButton::insideButton(int x,int y){
     int xl = mPosition.x, yl = mPosition.y;
     return (x >= xl && x <= xl + buttonWidth && y >= yl && y <= yl + buttonHeight);
 }
-LTexture gText;
-void LButton::drawButton(SDL_Color textColor, SDL_Color backgroundColor){
+
+void LButton::drawButton(){
     // load text
+    LTexture gText;
+    SDL_Color textColor, backgroundColor;
+    if (!currentSprite) textColor = WHITE, backgroundColor = BACKGROUND_BUTTON;
+    else backgroundColor = WHITE, textColor = BACKGROUND_BUTTON;
+    setFont(20);
     gText.loadText(text, textColor);
+    setFont(30);
     // load button screen width/height
     set(gText.getWidth() + 2, gText.getHeight() + 2);
     fillRectangle(mPosition.x,mPosition.y,buttonWidth, buttonHeight, backgroundColor);
@@ -36,26 +43,19 @@ void LButton::drawButton(SDL_Color textColor, SDL_Color backgroundColor){
     // draw button
     // draw button content.
     gText.normalRender(mPosition.x, mPosition.y);
+    gText.free();
 }
 // Handle event E
 void LButton::handleEvent(SDL_Event* e,void (*restart)()){
-    if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONUP){
-        int x,y;
-        SDL_GetMouseState(&x, &y);
+    int x,y;
+    SDL_GetMouseState(&x, &y);
         if (e->type == SDL_MOUSEMOTION){
             if (insideButton(x,y)) { // check if the mouse is inside the button
-                setFont(20);
-                drawButton(BACKGROUND_BUTTON, SWHITE); // change button color.
-                setFont(30);
-                PresentRender();
+                currentSprite = 0; // change button color.
             }
             else {
-                setFont(20);
-                drawButton(WHITE, BACKGROUND_BUTTON); // change back
-                setFont(30);
-                PresentRender();
+                currentSprite = 1; // change back
             } 
         }
-        if (insideButton(x,y) && e->type == SDL_MOUSEBUTTONUP)  restart(); // implement button content when click.
-    }
+        else if (insideButton(x,y))  restart(); // implement button content when click.
 }
