@@ -13,11 +13,11 @@ void GRID::random(){
 GRID operator+(GRID a, GRID b){
     GRID ans;
     ans.score = a.score + b.score;
-    ans.color = iColor[(int)log2(ans.score)];  
-    return ans; 
+    ans.color = iColor[(int)log2(ans.score)];
+    return ans;
 }
 bool operator==(GRID a, GRID b){
-    return (a.score == b.score); 
+    return (a.score == b.score);
 }
 bool operator!(GRID A){
     return (A.score != 0);

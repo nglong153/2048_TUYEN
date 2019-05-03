@@ -21,7 +21,7 @@ class LButton
     private:
         SDL_Point mPosition;
         int buttonHeight, buttonWidth;
-        int currentSprite; 
+        int currentSprite;
         string text;
 };
 

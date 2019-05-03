@@ -15,7 +15,7 @@ const int xl = 120;
 const int xr = 520;
 const int yl = 80;
 const int yr = 480;
-const int squareWidth = 100; 
+const int squareWidth = 100;
 const int N = 7;
 void setFont(int v);
 void init();
@@ -27,7 +27,7 @@ void fillRectangle(int x,int y, int width, int height, SDL_Color gColor);
 void fillRectangleBackground(SDL_Rect clip, SDL_Color gColor);
 void drawButton(LButton e,SDL_Color textColor, SDL_Color backgroundColor);
 string intoString(int score);
-void display(int score,GRID grid[N][N],LButton* newGame,LButton* newMode);
+void display(int score,GRID grid[N][N],LButton* newGame,LButton* newMode,LButton* Save, LButton* Load);
 class LTexture{
     public:
         // Init

@@ -7,15 +7,30 @@
 LButton::LButton(){
     mPosition.x = 0;
     mPosition.y = 0;
-    currentSprite = 1; 
+    currentSprite = 1;
     buttonHeight = buttonWidth = 0;
     text = "";
 }
-int LButton::getButtonWidth(){return buttonWidth;}
-int LButton::getButtonHeight(){return buttonHeight;}
-string LButton::getButtonText(){return text;}
-void LButton::set(int x,int y){buttonWidth = x; buttonHeight = y; }
-SDL_Point LButton::getPosition() { return mPosition; }
+int LButton::getButtonWidth(){
+    return buttonWidth;
+}
+
+int LButton::getButtonHeight(){
+    return buttonHeight;
+}
+string LButton::getButtonText(){
+    return text;
+}
+
+void LButton::set(int x,int y){
+    buttonWidth = x;
+    buttonHeight = y;
+}
+
+SDL_Point LButton::getPosition() {
+    return mPosition;
+}
+
 void LButton::initButton(int x,int y, string s){
     mPosition.x = x;
     mPosition.y = y;
@@ -30,19 +45,30 @@ void LButton::drawButton(){
     // load text
     LTexture gText;
     SDL_Color textColor, backgroundColor;
-    if (!currentSprite) textColor = WHITE, backgroundColor = BACKGROUND_BUTTON;
-    else backgroundColor = WHITE, textColor = BACKGROUND_BUTTON;
+    if (!currentSprite) {
+            textColor = WHITE;
+            backgroundColor = BACKGROUND_BUTTON;
+    }
+    else {
+            backgroundColor = WHITE;
+            textColor = BACKGROUND_BUTTON;
+    }
     setFont(20);
+
     gText.loadText(text, textColor);
+
     setFont(30);
     // load button screen width/height
-    set(gText.getWidth() + 2, gText.getHeight() + 2);
+    set(101,50);
     fillRectangle(mPosition.x,mPosition.y,buttonWidth, buttonHeight, backgroundColor);
+
     SDL_Rect clip = {mPosition.x, mPosition.y,buttonWidth, buttonHeight};
+
     fillRectangleBackground(clip,BACKGROUND_BUTTON);
     // draw button
     // draw button content.
-    gText.normalRender(mPosition.x, mPosition.y);
+    gText.render(mPosition.x, mPosition.y, &clip);
+
     gText.free();
 }
 // Handle event E
@@ -55,7 +81,8 @@ void LButton::handleEvent(SDL_Event* e,void (*restart)()){
             }
             else {
                 currentSprite = 1; // change back
-            } 
+            }
         }
-        else if (insideButton(x,y))  restart(); // implement button content when click.
+        else if (insideButton(x,y))
+            restart(); // implement button content when click.
 }
